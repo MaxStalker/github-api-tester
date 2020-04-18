@@ -1,1 +1,2 @@
-# github-api-tester
+# Purpose
+This repository will hold commits from our files in Playground
