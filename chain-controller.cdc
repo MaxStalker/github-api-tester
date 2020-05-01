@@ -1,5 +1,6 @@
 pub contract ChainController{
 
+  // Below here you can find a ChainLink
   pub resource ChainLink{
     pub let next: @ChainLink?
     pub var operator: AnyStruct?
@@ -11,9 +12,7 @@ pub contract ChainController{
     }
 
     init(){
-      self.operator = fun(a: Int, b: Int): Int{
-        return a + b
-      }
+      self.operator = nil
       self.next <- nil
     }
 
@@ -22,13 +21,28 @@ pub contract ChainController{
     }
   }
   
+
+  // Ths is contract init function
   init(){
     log("Chain Controller created")
     let chain <- create ChainLink()
-    if let p = chain.operator as? ((Int, Int):Int){
-      let result = p(2,5)
-      log(result)
+    self.account.save(<-chain, to: /storage/ChainLink)
+    
+    // 
+
+    let addition: ((&ChainLink): AnyStruct) = fun (link: &ChainLink): ((Int, Int): Int) {
+      return fun(a: Int, b: Int): Int{
+        return a + b
+      }
     }
-    destroy chain;
+
+    /*
+    let ref:&ChainLink = &chain as &ChainLink
+    
+    let addExposed = addition(ref)
+    let result = addExposed(2,5)
+    log(result)
+    */
+    log("it works!")
   }
 }
