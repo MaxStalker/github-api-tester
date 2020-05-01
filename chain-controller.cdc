@@ -4,6 +4,7 @@ pub contract ChainController{
   pub resource ChainLink{
     pub let next: @ChainLink?
     pub var operator: AnyStruct?
+    pub let testMe: Int
     
     pub fun changeOperator(newOperator: ((&ChainLink):AnyStruct) ): Void{
       log("let's spicy things up")
@@ -14,6 +15,7 @@ pub contract ChainController{
     init(){
       self.operator = nil
       self.next <- nil
+      self.testMe = 42
     }
 
     destroy(){
@@ -23,26 +25,21 @@ pub contract ChainController{
   
 
   // Ths is contract init function
-  init(){
+  init(){  
     log("Chain Controller created")
     let chain <- create ChainLink()
     self.account.save(<-chain, to: /storage/ChainLink)
-    
-    // 
+    // self.account.link<&ChainLink>(/private/ChainLink, target: /storage/ChainLink)
 
-    let addition: ((&ChainLink): AnyStruct) = fun (link: &ChainLink): ((Int, Int): Int) {
-      return fun(a: Int, b: Int): Int{
-        return a + b
-      }
-    }
-
-    /*
+/*
+    // maybe
     let ref:&ChainLink = &chain as &ChainLink
     
     let addExposed = addition(ref)
     let result = addExposed(2,5)
     log(result)
-    */
+    
     log("it works!")
+    */
   }
 }
