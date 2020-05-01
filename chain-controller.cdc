@@ -11,7 +11,9 @@ pub contract ChainController{
     }
 
     init(){
-      self.operator = nil
+      self.operator = fun(a: Int, b: Int): Int{
+        return a + b
+      }
       self.next <- nil
     }
 
@@ -20,8 +22,13 @@ pub contract ChainController{
     }
   }
   
-
   init(){
     log("Chain Controller created")
+    let chain <- create ChainLink()
+    if let p = chain.operator as? ((Int, Int):Int){
+      let result = p(2,5)
+      log(result)
+    }
+    destroy chain;
   }
 }
