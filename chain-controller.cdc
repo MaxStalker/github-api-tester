@@ -2,16 +2,16 @@ pub contract ChainController{
 
   pub resource ChainLink{
     pub let next: @ChainLink?
-    pub let operator: AnyStruct
+    pub var operator: AnyStruct?
     
-    pub fun changeOperator(): Void{
+    pub fun changeOperator(newOperator: ((&ChainLink):AnyStruct) ): Void{
       log("let's spicy things up")
+      let ref: &ChainLink = &self as &ChainLink
+      self.operator = newOperator(ref) 
     }
 
     init(){
-      self.operator = fun (a: Int, b: Int): Int{
-        return a + b
-      }
+      self.operator = nil
       self.next <- nil
     }
 
