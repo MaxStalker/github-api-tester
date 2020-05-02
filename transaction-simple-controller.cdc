@@ -13,6 +13,5 @@ transaction {
         let sum = addOperator.operate(operands: [2,3])
         log(sum)
       }
-      log(Controller.baseStruct.name)
     }
 }
