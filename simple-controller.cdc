@@ -18,20 +18,11 @@ pub contract Controller {
         }
 
         init(){
-          self.name = "hello"
+          self.name = "Operator: Add"
         }
     }
 
-    pub struct BaseStruct{
-      pub let name: String
-
-      init(){
-        self.name = "bazinga"
-      }
-    }
-
-    pub var operator: {Operator}?
-    pub let baseStruct: BaseStruct
+    pub var operator: AnyStruct{Operator}
     pub let name: String
 
     pub fun setOperator(newOp: {Operator}){
@@ -40,7 +31,6 @@ pub contract Controller {
 
     init() {
         self.operator = AddOperator()
-        self.baseStruct = BaseStruct()
         self.name = "controller"
     }
 }
