@@ -1,36 +1,18 @@
-import Controller from 0x01
+import Controller from 0x02
 
 transaction {
-
-  let ref: &Controller.Operator
-  let add: ((Int, Int): Int)
-
   prepare(acct: AuthAccount) {
 
-    self.ref = acct.borrow<&Controller.Operator>(from: /storage/Operator)!
-    self.add = fun(a: Int, b: Int): Int{
-      return a + b
-    }
   }
 
   execute {
-    // This works :)
-    log(self.ref.id)
+      log("start")
+      if let addOperator = Controller.operator as? Controller.AddOperator{
+        log(addOperator.name)
 
-    // Those two lines as well
-    var res = self.add(2,5)
-    log(res)
-
-    // It works if we use Int
-    self.ref.changeOperator(newOperator: 5)
-    log(self.ref.operator)
-
-    
-    // Now this one doesn't :(
-    /*
-    self.ref.changeOperator(newOperator: fun(a: Int, b: Int): Int{
-      return a + b
-    })
-    */
-  }
+        let sum = addOperator.operate(operands: [2,3])
+        log(sum)
+      }
+      log(Controller.baseStruct.name)
+    }
 }
