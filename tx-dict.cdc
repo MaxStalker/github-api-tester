@@ -9,23 +9,21 @@ transaction {
   execute {
     let subtract = NewOperators.Subtract();
     Controller.addAction(name: "subtract", op: subtract)    
-    log(Controller.actions.length)
-    log(Controller.actions.keys)
-    log(Controller.actions["subtract"])
-    
-    if let action = Controller.actions["subtract"] as? NewOperators.Subtract{
-      // log(sub.name)
 
-      let sum = action.operate(operands: [8,3])
-      log(sum)
+    if let action = Controller.actions["subtract"]{
+      if let op = action as? NewOperators.Subtract{
+        log(op.name)
+        let res = op.operate(operands: [8,3])
+        log(res)
+      }
     }
-    /*
-    if let add = Controller.actions["add"] as? Controller.AddOperator{
-      // log(add.name)
 
-      let sum = add.operate(operands: [5,3])
-      log(sum)
+    if let action = Controller.actions["add"]{
+      if let op = action as? Controller.AddOperator{
+        log(op.name)
+        let res = op.operate(operands: [8,3])
+        log(res)
+      }
     }
-    */
   }
 }
