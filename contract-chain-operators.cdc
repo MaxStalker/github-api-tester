@@ -47,12 +47,21 @@ pub contract ChainOperators{
             self.metaResources <- {};
             self.metaFields = {};
         }
-
         
         destroy(){
             destroy self.metaResources
         }
-        
+
+        pub fun getMetaResource(name: String): @AnyResource?{
+            // If the NFT isn't found, the transaction panics and reverts
+            let metaResource <- self.metaResources.remove(key: name)!
+            return <- metaResource
+        }
+
+        pub fun getMetaField(name: String): AnyStruct?{
+            let metaField = self.metaFields[name]!
+            return metaField
+        }        
 
         pub fun withdraw(amount: UInt): @Vault {
             // TODO: Create custom operator to handle withdraw
