@@ -1,3 +1,5 @@
+// TODO: Simply embed struct based solution (slightly adjusted) and call it a day :\
+
 pub contract ChainOperators{
 
     pub resource interface Operator{
@@ -52,6 +54,7 @@ pub contract ChainOperators{
             destroy self.metaResources
         }
 
+
         pub fun getMetaResource(name: String): @AnyResource?{
             // If the NFT isn't found, the transaction panics and reverts
             let metaResource <- self.metaResources.remove(key: name)!
@@ -65,10 +68,12 @@ pub contract ChainOperators{
 
         pub fun withdraw(amount: UInt): @Vault {
             // TODO: Create custom operator to handle withdraw
-            // self.balance = self.balance - amount
-            // return <-create Vault(balance: amount)
-            log("withdraw")
-            return <- create Vault(balance:0)
+            if withdrawOperator <- self.getMetaResource('withdrawOperator'){
+                withdrawOperator.call('withdraw', {amount: amount}, )
+            } else {
+                self.balance = self.balance - amount
+                return <- create Vault(balance: amount)
+            }
         }
 
         pub fun deposit(from: @Vault) {
