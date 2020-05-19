@@ -1,8 +1,10 @@
 // TODO: Simply embed struct based solution (slightly adjusted) and call it a day :\
+// TODO: Add Splitter Operator
 
 pub contract ChainOperators{
 
-    pub resource interface Operator{
+
+    pub resource interface LinkOperator{
         pub let name: String
         pub var nextOp: @AnyResource?
 
@@ -10,6 +12,13 @@ pub contract ChainOperators{
         pub fun setNext(nextOperator: @AnyResource?)
     }
 
+    /*
+    pub resource interface Operator{
+        pub let name: String
+        pub fun operate(data: {String: AnyStruct}): AnyStruct
+    }
+
+    /*
     pub resource Chain{
         pub var trigger:String
         pub var firstLink: @AnyResource? // we need it in order to cast down to Operator, I believe
@@ -38,6 +47,7 @@ pub contract ChainOperators{
             destroy self.firstLink
         }
     }
+    */
 
     pub resource Vault{
         pub let balance: UInt
@@ -53,7 +63,11 @@ pub contract ChainOperators{
         destroy(){
             destroy self.metaResources
         }
-
+    
+        pub fun setMetaResource(name: String, metaResource: @AnyResource){
+            let oldResource <- self.metaResources[name] <- metaResource
+            destroy oldResource;
+        }
 
         pub fun getMetaResource(name: String): @AnyResource?{
             // If the NFT isn't found, the transaction panics and reverts
@@ -61,15 +75,22 @@ pub contract ChainOperators{
             return <- metaResource
         }
 
+        pub fun setMetaField(name: String, metaField: AnyStruct){
+            self.metaFields[name] = metaField
+        }
+
         pub fun getMetaField(name: String): AnyStruct?{
             let metaField = self.metaFields[name]!
             return metaField
         }        
 
+        
         pub fun withdraw(amount: UInt): @Vault {
             // TODO: Create custom operator to handle withdraw
-            if withdrawOperator <- self.getMetaResource('withdrawOperator'){
-                withdrawOperator.call('withdraw', {amount: amount}, )
+            if withdrawOperator <- self.getMetaResource(name: "withdrawOperator"){
+                let data = {amount: amount}
+                return <- create Vault(balance: 0) // REMOVE THIS
+                // withdrawOperator.call(action: "withdraw", data: data)
             } else {
                 self.balance = self.balance - amount
                 return <- create Vault(balance: amount)
