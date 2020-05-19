@@ -36,4 +36,55 @@ pub contract ChainOperators{
             destroy self.firstLink
         }
     }
+
+    pub resource Vault{
+        pub let balance: UInt
+        pub var metaFields: {String: AnyStruct}
+        pub var metaResources: @{String: AnyResource?}
+
+        init(balance: UInt){
+            self.balance = balance
+            self.metaResources <- {};
+            self.metaFields = {};
+        }
+
+        
+        destroy(){
+            destroy self.metaResources
+        }
+        
+
+        pub fun withdraw(amount: UInt): @Vault {
+            // TODO: Create custom operator to handle withdraw
+            // self.balance = self.balance - amount
+            // return <-create Vault(balance: amount)
+            log("withdraw")
+            return <- create Vault(balance:0)
+        }
+
+        pub fun deposit(from: @Vault) {
+            // TODO: Create custom solution which will utilize owned resource
+            // self.balance = self.balance + from.balance
+            // destroy from
+            log("deposit")
+            destroy from
+        }
+    }
+
+    // Public method to create empty vaults
+    pub fun createEmptyVault(): @Vault {
+        return <- create Vault(balance: 0)
+    }
+
+    // Resource that will control initial deposit to Vault
+    pub resource VaultMinter {
+        pub fun supplyBalance(amount: UInt, recipient: &Vault) {
+            recipient.deposit(from: <- create Vault(balance: amount))
+        }
+    }
+
+    init() {
+        self.account.save(<-create VaultMinter(), to: /storage/MainMinter)
+        self.account.link<&VaultMinter>(/private/Minter, target: /storage/MainMinter)
+    }
 }
